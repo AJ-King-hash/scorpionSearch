@@ -1,0 +1,22 @@
+{
+    "name": "scorpion/scorpsearch",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Algorithms\\": "Algorithms/",
+            "Enums\\": "Enums/",
+            "Schemas\\": "Schemas/",
+            "Treeval\\": "Treeval/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ali Jahjah",
+            "email": "ali76723201@gmail.com"
+        }
+    ],
+    "require": {
+        "wamania/php-stemmer": "^4.0"
+    }
+}
