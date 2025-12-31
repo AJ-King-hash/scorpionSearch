@@ -1,5 +1,6 @@
 {
     "name": "scorpion/scorpsearch",
+    "description": "a full package for your projects search system to make your search more efficient",
     "type": "library",
     "license": "MIT",
     "autoload": {
