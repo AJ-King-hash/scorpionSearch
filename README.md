@@ -130,7 +130,7 @@ $query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
         "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
     ]); // Phrases to Search From
     $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::PERMUTERM); // Basic Algorithm
-    $treeBuilder->setMixedAlgorithms([AvailableAlgorithm::F1_MEASURE]); // Mixed Algorithms (corrected from empty in original)
+    $treeBuilder->setMixedAlgorithms([AvailableAlgorithm::F1_MEASURE]); // Mixed Algorithms
     return $treeBuilder;
 })->search();
 print_r($query_results);
@@ -251,6 +251,78 @@ print_r($query_results);
 
 **Simple Explanation**: Scores phrases higher if query terms appear often in them but rarely overall (e.g., "future" and "minds" boost relevant phrases).
 
+## Using in Laravel 12 🛡️
+
+ScorpSearch integrates seamlessly with Laravel 12, which was released on February 24, 2025, with zero breaking changes from Laravel 11 and updates to upstream dependencies. You can use it for in-memory searching and ranking of text data, such as searching through blog posts, product descriptions, or any array of phrases loaded from your database or other sources.
+
+### Installation in Laravel
+
+1. Require the package via Composer (same as general installation):
+
+   ```bash
+   composer require scorpion/scorpsearch
+   ```
+
+2. Laravel's autoloading will handle the namespaces automatically. No additional configuration is needed unless you want to publish a config file or bind it to the IoC container.
+
+### Example: Integrating into a Laravel Controller
+
+Here's an example of using ScorpSearch in a Laravel 12 controller for a simple search feature. Assume you have a model like `Post` with a `content` field, and you want to search through post contents using Boolean search.
+
+Create a controller, e.g., `app/Http/Controllers/SearchController.php`:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Enums\AvailableAlgorithm;
+use Treeval\TreeBuilder;
+use Treeval\SearchRunner;
+use App\Models\Post; // Assuming you have a Post model
+
+class SearchController extends Controller
+{
+    public function search(Request $request)
+    {
+        $query = $request->input('query', 'ai & Elon'); // Get query from request, default example
+
+        // Load phrases from database (e.g., post contents)
+        $phrases = Post::pluck('content')->toArray();
+
+        $results = SearchRunner::create(function (TreeBuilder $treeBuilder) use ($query, $phrases) {
+            $treeBuilder->setSearchQuery($query);
+            $treeBuilder->setPhrases($phrases);
+            $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::BOOLEAN);
+            $treeBuilder->setMixedAlgorithms([AvailableAlgorithm::F1_MEASURE]); // Optional: Add F1 for ranking
+            return $treeBuilder;
+        })->search();
+
+        return response()->json($results);
+    }
+}
+```
+
+### Routing
+
+Add a route in `routes/web.php` or `routes/api.php`:
+
+```php
+use App\Http\Controllers\SearchController;
+
+Route::get('/search', [SearchController::class, 'search']);
+```
+
+### Explanation
+
+- **Loading Phrases**: Fetch data from your Eloquent models (e.g., `Post::pluck('content')`) to use as the phrases array.
+- **Search Execution**: Use the same `SearchRunner` pattern inside the controller method.
+- **Response**: Return the results as JSON or render a view with the data.
+- **Advanced Integration**: For larger applications, consider injecting `SearchRunner` via dependency injection or creating a service class for reusability.
+
+This setup allows you to leverage ScorpSearch's algorithms for custom search logic without relying on full-text database searches, ideal for fuzzy or algorithmic matching.
+
 ## Adding Custom Algorithms 🛠️
 
 You can extend the package by adding your own algorithm. Implement the `Algorithm` and `Chainer` interfaces in a new class under the `/Algorithms` folder. The package uses auto-wiring to detect it automatically.
@@ -345,5 +417,6 @@ Fork the repository on GitHub, make changes, and submit a pull request. Issues a
 
 ## License 📄
 
-This package is open-source under the MIT License. See LICENSE file for details.                           
+This package is open-source under the MIT License. See LICENSE file for details.
+
 Made with ❤️ by Ali Yazan Jahjah
