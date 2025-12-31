@@ -345,5 +345,5 @@ Fork the repository on GitHub, make changes, and submit a pull request. Issues a
 
 ## License 📄
 
-This package is open-source under the MIT License. See LICENSE file for details.
+This package is open-source under the MIT License. See LICENSE file for details.                           
 Made with ❤️ by Ali Yazan Jahjah
