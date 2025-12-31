@@ -1,2 +1,348 @@
-# scorpionSearch
-a full package for your projects search system to make your search more efficient 
+# ScorpSearch 🔍
+
+A powerful PHP Composer package for implementing various search algorithms, including Edit Distance, Boolean Search, Permuterm Index, Inverted Index, Positional Index, N-gram, TF-IDF Ranking, and more. It supports mixing algorithms for enhanced results and allows easy extension with custom algorithms.
+
+This package is designed for efficient text searching and ranking in PHP applications. It uses a builder pattern for flexibility and auto-wiring for detecting new algorithms.
+
+## Installation 📦
+
+Install the package via Composer:
+
+```bash
+composer require scorpion/scorpsearch
+```
+
+Ensure you have PHP 8.0+ and Composer installed.
+
+## Usage 🚀
+
+To use ScorpSearch, include the autoloader and create a `SearchRunner` instance with a `TreeBuilder` callback. Set the search query, phrases to search from, basic algorithm, and optional mixed algorithms.
+
+Below are examples of each algorithm, with simple explanations. All examples assume you've included the autoloader:
+
+```php
+include(__DIR__ . "/vendor/autoload.php");
+```
+
+### 1. Edit Distance 📏
+
+This algorithm calculates the minimum number of operations (insertions, deletions, substitutions) needed to transform one string into another. It's useful for finding similar strings, like correcting typos.
+
+```php
+use Algorithms\AlgorithmsChainer;
+use Enums\AvailableAlgorithm;
+use Treeval\TreeBuilder;
+use Treeval\SearchRunner;
+
+$edit_distance = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("cating -> cutting"); // Search Query (format: "source -> target")
+    $treeBuilder->setPhrases([]); // No phrases needed for this algorithm
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::EDITDISTANCE); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]); // Mixed Algorithms (none here)
+    return $treeBuilder;
+})->search();
+print_r($edit_distance);
+```
+
+**Simple Explanation**: It measures how "close" two words are by counting changes. For "cating -> cutting", it might return a distance of 2 (insert 't' and 'u').
+
+### 2. Normal Boolean Search ⚖️
+
+This performs a boolean search using operators like AND (&), OR, and exact phrases. It filters phrases that match the query logically.
+
+```php
+$boolean_search_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("ai & Elon"); // Search Query (supports & for AND, OR, "exact phrase")
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::BOOLEAN); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]); // Mixed Algorithms (none here)
+    return $treeBuilder;
+})->search();
+print_r($boolean_search_results);
+```
+
+**Simple Explanation**: It checks if phrases contain both "ai" AND "Elon" (using &). Results include only matching phrases, like the one mentioning Elon Musk and AI.
+
+### 3. Mixed Boolean + F1 Measure 📊
+
+This combines boolean search with F1 Measure for scoring results based on precision and recall. F1 helps rank how well matches balance completeness and accuracy.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("ai Elon"); // Search Query (implicit AND)
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::BOOLEAN); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([AvailableAlgorithm::F1_MEASURE]); // Mixed Algorithms
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: First, it finds boolean matches for "ai" and "Elon". Then, F1 scores them (0-1 scale) based on how precisely and completely they match, ranking the best ones higher.
+
+### 4. Normal Permuterm Index 🔄
+
+This index allows wildcard searches (e.g., for prefixes/suffixes) by rotating terms. It's great for autocomplete or partial matches.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("in the worl"); // Search Query (supports partial matches)
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::PERMUTERM); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]); // Mixed Algorithms (none here)
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: It rotates words (e.g., "world" becomes "world$", "orld$w", etc.) to find matches like "in the worl" to "in the world".
+
+### 5. Mixed Permuterm Index + F1 Measure 📈
+
+This enhances Permuterm searches with F1 scoring for better ranking of partial matches.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("in the worl"); // Search Query
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::PERMUTERM); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([AvailableAlgorithm::F1_MEASURE]); // Mixed Algorithms (corrected from empty in original)
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: Finds partial matches like in normal Permuterm, then uses F1 to score and rank them by relevance (precision + recall).
+
+### 6. Inverted Index 📑
+
+This creates a map of words to their locations in phrases, speeding up searches for specific terms.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("Keep Studying Programming"); // Search Query
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::INVERTED); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]);
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: It lists where each word appears (e.g., "Programming" in phrase 5). Quick for finding phrases with all query words.
+
+### 7. Positional Index 📍
+
+Similar to Inverted Index but tracks exact positions of words, useful for phrase searches or proximity.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("will be"); // Search Query
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::POSITIONAL); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]);
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: Finds where "will" and "be" appear next to each other (e.g., positions 2-3 in phrase 1).
+
+### 8. Positional Index Mixed + Mean Average Precision (MAV) 📉
+
+Combines Positional Index with MAV to average precision scores across results for ranking.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("will be"); // Search Query
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::POSITIONAL); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([AvailableAlgorithm::MAV]);
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: Gets positional matches, then uses MAV to calculate an overall precision score, helping rank the most relevant phrases.
+
+### 9. N-gram 🔠
+
+Breaks text into overlapping sequences (n-grams) for fuzzy matching, good for spell checking or similarity.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("in the"); // Search Query
+    $treeBuilder->setPhrases([
+        "AI Will be the most efficient tools in the world programming world",
+        "MarkZuckemberg refers that the AI will be the greatest fear of the Programmers",
+        "Two Or More Languages Are Supporting AI Developing With High Performance Is Better than One",
+        "MarkZuckemberg will be Is Attend in To Learn the More About world Elon Musk Robots To Make their Own Robots Using AI",
+        "I Highly Recommend To Keep Studying in the world Programming Languages I do not think we need to fear from AI ,Otherwise, It Will Helps Us A lot"
+    ]); // Phrases to Search From
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::NGRAM); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]);
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: Splits into chunks (e.g., "in the" → "in ", "n t", " th", etc.) and finds similar chunks in phrases for approximate matches.
+
+### 10. TF-IDF Ranking 📊
+
+Ranks phrases by Term Frequency-Inverse Document Frequency, highlighting important unique terms.
+
+```php
+$query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
+    $treeBuilder->setSearchQuery("the future using using people minds to make AI better"); // Search Query
+    $treeBuilder->setPhrases([
+        "AI will be great AI is the most significint thing in the world and it will be great",
+        "the people who attend to use other people minds to make the world more brightness using AI it will be great and better for the future",
+        "the thing you should know the most is to make the world bigger than you think to make it more brightness using AI"
+    ]); // Phrases to Rank The Priority
+    $treeBuilder->setBasicAlgorithm(AvailableAlgorithm::TFIDF); // Basic Algorithm
+    $treeBuilder->setMixedAlgorithms([]);
+    return $treeBuilder;
+})->search();
+print_r($query_results);
+```
+
+**Simple Explanation**: Scores phrases higher if query terms appear often in them but rarely overall (e.g., "future" and "minds" boost relevant phrases).
+
+## Adding Custom Algorithms 🛠️
+
+You can extend the package by adding your own algorithm. Implement the `Algorithm` and `Chainer` interfaces in a new class under the `/Algorithms` folder. The package uses auto-wiring to detect it automatically.
+
+Example implementation (`Algorithms/YourOwnAlgorithm.php`):
+
+```php
+<?php 
+namespace Algorithms;
+
+use Algorithms\Interfaces\Chainer;
+use Algorithms\Interfaces\Algorithm;
+use Schemas\Phrases;
+
+class YourOwnAlgorithm implements Algorithm, Chainer {
+    private Chainer $nextChain;
+    
+    public function testReflection() {
+        echo "reflection Request Send!";
+    }
+    
+    public function __construct($name) {
+        echo $name;
+    }
+    
+    public function setNextChain(Chainer $chainer) {
+        $this->nextChain = $chainer;
+    }
+    
+    public function runAlgorithm(Phrases $phrases_modifier, array $mixed_algorithm = []) {
+        // Your algorithm logic here
+    }
+}
+```
+
+Then, add it to the `AvailableAlgorithm` enum (`Enums/AvailableAlgorithm.php`):
+
+```php
+<?php 
+
+namespace Enums;
+
+enum AvailableAlgorithm: string {
+    case BOOLEAN = "Boolean";
+    case NGRAM = "Ngram";
+    case EDITDISTANCE = "EditDistance";
+    case INVERTED = "InvertedIndex";
+    case PERMUTERM = "PermutermIndex";
+    case POSITIONAL = "PositionalIndex";
+    case TFIDF = "TFIDFRanking";
+    /**
+     * Summary of AveragePrecision: Used With "Positional mixed algorithms"
+     */
+    case MAV = "AveragePrecision";
+    /**
+     * Summary of F1_MEASURE: Used With "Boolean mixed algorithms"
+     */
+    case F1_MEASURE = "F1Measure";
+    
+    case YOURALGORITHM = "YourOwnAlgorithm"; // Value must match the class name (without .php)
+    
+    public static function all() {
+        $all = [];
+        foreach (self::cases() as $case) {
+            $all[] = $case->value;
+        }
+        return $all;
+    }
+    
+    public function getSeparator() {
+        return match($this) {
+            self::BOOLEAN => PhraseSeparatorType::BOOLEAN,
+            self::NGRAM => PhraseSeparatorType::SPACES,
+            self::EDITDISTANCE => PhraseSeparatorType::SPACES,
+            self::INVERTED => PhraseSeparatorType::SPACES,
+            self::PERMUTERM => PhraseSeparatorType::SPACES,
+            self::POSITIONAL => PhraseSeparatorType::SPACES,
+            self::TFIDF => PhraseSeparatorType::SPACES,
+            self::F1_MEASURE => PhraseSeparatorType::SPACES,
+            self::MAV => PhraseSeparatorType::SPACES, 
+            self::YOURALGORITHM => PhraseSeparatorType::SPACES, 
+        };
+    }
+}
+```
+
+**Simple Explanation**: Create your class with the required methods. Add an enum case with the value matching your class name. Now you can use `AvailableAlgorithm::YOURALGORITHM` in searches. The `getSeparator()` defines how queries are split (e.g., by spaces).
+
+## Contributing 🤝
+
+Fork the repository on GitHub, make changes, and submit a pull request. Issues and feature requests are welcome!
+
+## License 📄
+
+This package is open-source under the MIT License. See LICENSE file for details.
