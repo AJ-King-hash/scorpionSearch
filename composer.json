@@ -1,6 +1,12 @@
 {
     "name": "scorpion/scorpsearch",
     "description": "a full package for your projects search system to make your search more efficient",
+    "keywords": [
+        "laravel",
+        "search",
+        "algorithms",
+        "php"
+    ],
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -11,13 +17,16 @@
             "Treeval\\": "Treeval/"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "authors": [
         {
             "name": "Ali Jahjah",
             "email": "ali76723201@gmail.com"
         }
     ],
-    "require": {
+    "require":{
+        "php": ">=8.2",
         "wamania/php-stemmer": "^4.0"
     }
 }
