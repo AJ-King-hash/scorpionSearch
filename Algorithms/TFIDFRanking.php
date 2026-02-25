@@ -99,9 +99,10 @@ class TFIDFRanking implements Algorithm,Chainer{
             $priorities[0] = $phrases_modifier->phrases[0];
             $shows = [];
             foreach ($priorities as $k => $i) {
-                $shows[] = [$k, $i];
+                $shows[$k] = $i;
             }
-            return "Matched Documents: wanted query==>({$phrases_modifier->modified_query})" . implode("", array_map(function($x) { return "\n \n {$x[0]}=>({$x[1]}) \n \n"; }, $shows)) . PHP_EOL;
+            return ["wanted query"=>$phrases_modifier->modified_query ,
+            "documents"=>  $shows];
     }
 
 }

@@ -39,9 +39,10 @@ class F1Measure extends StemmerFactory implements Algorithm, Chainer{
                     return $this->nextChain->runAlgorithm($phrases_modifier);
                 }
                 if (!empty($phrases_modifier->temp_final_results)) {
-                return "Matched Documents: " . implode("\n", array_map(function($x, $idx) { return "$idx=>($x)"; }, $phrases_modifier->temp_final_results, array_keys($phrases_modifier->temp_final_results))) . PHP_EOL;
+                    $documents=array_combine(array_keys($phrases_modifier->temp_final_results),$phrases_modifier->temp_final_results);
+                return $documents;
             } else {
-                return "No MatchedDocuments" . PHP_EOL;
+                return [];
             }       
         }
     

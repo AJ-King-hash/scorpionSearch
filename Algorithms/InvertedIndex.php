@@ -65,11 +65,10 @@ class InvertedIndex extends StemmerFactory implements Algorithm, Chainer
             return $this->nextChain->runAlgorithm($phrases_modifier);
         }
         if (!empty($this->final_results)) {
-            return "Matched Documents: " . implode("\n", array_map(function ($x, $idx) {
-                return "$idx=>($x)"; }, $this->final_results, array_keys($this->final_results))) . PHP_EOL;
-        } else {
-            return "No MatchedDocuments" . PHP_EOL;
-        }
+               return $this->final_results;
+            } else {
+                return [];
+            }
     }
 
 }

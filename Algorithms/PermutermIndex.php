@@ -86,9 +86,11 @@ class PermutermIndex extends StemmerFactory implements Algorithm,Chainer{
         }
 
         if (!empty($this->final_results)) {
-                return "Matched Documents: " . implode("\n", array_map(function($x, $idx) { return "$idx=>($x)"; }, $this->final_results, array_keys($this->final_results))) . PHP_EOL;
+            $documents=array_combine(array_keys($this->final_results),$this->final_results);
+
+                return $documents;
             } else {
-                return "No MatchedDocuments" . PHP_EOL;
+                return [];
             }
     }
 

@@ -78,7 +78,7 @@ include(__DIR__ . "/vendor/autoload.php");
 // })->search();
 // print_r($query_results);
 
-// //5- MIXED PERMUTERM INDEX + F1_MEASURE (DONE!)
+// // 5- MIXED PERMUTERM INDEX + F1_MEASURE (DONE!)
 // $query_results = SearchRunner::create(function (TreeBuilder $treeBuilder) {
 //     $treeBuilder->setSearchQuery("in the worl"); //Search Query
 //     $treeBuilder->setPhrases([

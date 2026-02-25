@@ -65,9 +65,9 @@ class Ngram extends StemmerFactory implements Algorithm,Chainer{
                 foreach ($this->last_ngrams as $k => $v) {
                     $datas[] = "($k)=>" . implode(" ", array_map(function($x) { return "($x)"; }, $v));
                 }
-                return "Matched Words: " . implode(",\n", $datas) . PHP_EOL;
+                return $datas;
             } else {
-                return "No MatchedDocuments" . PHP_EOL;
+                return [];
             }
 }
 
