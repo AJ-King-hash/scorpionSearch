@@ -1,5 +1,6 @@
-![ScorpionSearch](https://github.com/user-attachments/assets/a88012a6-55b7-4498-bdab-e04157c751bb)
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a88012a6-55b7-4498-bdab-e04157c751bb" width="500" height="300">
+</p>
 # ScorpSearch 🔍
 
 A powerful PHP Composer package for implementing various search algorithms, including Edit Distance, Boolean Search, Permuterm Index, Inverted Index, Positional Index, N-gram, TF-IDF Ranking, and more. It supports mixing algorithms for enhanced results and allows easy extension with custom algorithms.
