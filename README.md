@@ -9,7 +9,7 @@ This package is designed for efficient text searching and ranking in PHP applica
 Install the package via Composer:
 
 ```bash
-composer require scorpion/scorpsearch
+composer require scorpion/scorpsearch:v1.0.0
 ```
 
 Ensure you have PHP 8.0+ and Composer installed.
