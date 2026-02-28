@@ -3,17 +3,16 @@ namespace Algorithms;
 
 use Algorithms\Interfaces\Chainer;
 use Schemas\Phrases;
-include(__DIR__."/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 
 class TFIDFRanking implements Algorithm,Chainer{
     private Chainer $nextChain;
     public function testReflection(){
-        echo "reflection Request Send!";
+        // echo "reflection Request Send!";
     }
     public function __construct($name){
-        echo $name;
+        // echo $name;
     }
     public function setNextChain(Chainer $chainer){
         $this->nextChain=$chainer;
@@ -91,7 +90,7 @@ class TFIDFRanking implements Algorithm,Chainer{
             foreach ($scores as $k => $i) {
                 $full_scores[$k] = abs(array_sum($i));
             }
-            echo "scores with query=\n" . json_encode($full_scores) . PHP_EOL;
+            // echo "scores with query=\n" . json_encode($full_scores) . PHP_EOL;
             $max_index = array_search(max($full_scores), $full_scores);
             $priorities = [];
             $priorities[$max_index] = $phrases_modifier->phrases[$max_index];

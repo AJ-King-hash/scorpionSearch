@@ -3,7 +3,6 @@ namespace Algorithms;
 
 use Algorithms\Interfaces\Chainer;
 use Schemas\Phrases;
-include(__DIR__."/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 
@@ -28,10 +27,10 @@ class AveragePrecision implements Algorithm,Chainer{
     ];
 
     public function testReflection(){
-        echo "reflection Request Send!";
+        // echo "reflection Request Send!";
     }
     public function __construct($name){
-        echo $name;
+        // echo $name;
     }
     public function setNextChain(Chainer $chainer){
      $this->nextChain=$chainer;   
@@ -61,7 +60,7 @@ class AveragePrecision implements Algorithm,Chainer{
                 $averaging[] = $counter / $k;
             }
         }
-        echo "averaging is: " . json_encode($averaging) . PHP_EOL;
+        // echo "averaging is: " . json_encode($averaging) . PHP_EOL;
         return array_sum($averaging) / $relevants;
     }
 
@@ -74,7 +73,7 @@ class AveragePrecision implements Algorithm,Chainer{
                     $finalssss[] = $this->averagePrecision($i[0], $i[1], $i[2], rand(2, 5));
                 }
                 $map = array_sum($finalssss) / count($finalssss);
-                echo "the Mean Average Percision is: ";  
+                // echo "the Mean Average Percision is: ";  
                 
                 if (!empty($phrases_modifier->temp_valid_keys)) {
             return [

@@ -73,7 +73,7 @@ class Phrases{
             $index=$k;
             $this->phrasesWithUniqueNumber["d$index"]=$phrase;
             $this->phrasesAsArrayOfWords["d$index"]=array_unique(explode(" ",$phrase));
-            echo "\n d$index='$phrase' \n\n";
+            // echo "\n d$index='$phrase' \n\n";
         }  
         // print_r($this->phrasesAsArrayOfWords);
         foreach ($this->phrasesAsArrayOfWords as $key => $phrase) {
@@ -99,9 +99,9 @@ class Phrases{
             $this->filteringRootWords[$u_word]=$old_rooting;
         }    
         // print_r($this->filteringRootWords);
-        echo "\n\n";
+        // echo "\n\n";
         foreach ($this->filteringRootWords as $k => $fi) {
-            echo "$k ---".json_encode($fi).PHP_EOL;
+            // echo "$k ---".json_encode($fi).PHP_EOL;
             $this->inverted_keys[]=$k;
         }
         sort($this->inverted_keys);
@@ -150,34 +150,34 @@ class Phrases{
                 }
             }
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         
     }
     public function matchDOCS(array $algorithm_query){
         $matched_docs_with_query=[];
         $last_numbers=[];
         $final_numbers=[];
-        echo "You have ordered:" . PHP_EOL;
+        // echo "You have ordered:" . PHP_EOL;
         foreach ($algorithm_query as $index) {
-            echo $index . PHP_EOL;
+            // echo $index . PHP_EOL;
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
 
         foreach ($this->filteringRootWords as $k => $i) {
             if (in_array($k, $algorithm_query)) {
                 $matched_docs_with_query[$k] = $i;
             }
         }
-        echo "\n" . PHP_EOL;
-        print_r($matched_docs_with_query);
+        // echo "\n" . PHP_EOL;
+        // print_r($matched_docs_with_query);
         foreach ($matched_docs_with_query as $k => $i) {
             $last_numbers[$k] = array_filter($i, function ($i2) {
                 return $i2 === 1; });
             $final_numbers[$k] = $this->arrayToInt(array_values($i));
         }
-        echo "\n" . PHP_EOL;
-        print_r($final_numbers);
-        print_r($last_numbers);
+        // echo "\n" . PHP_EOL;
+        // print_r($final_numbers);
+        // print_r($last_numbers);
 
         return [$last_numbers,$final_numbers,$matched_docs_with_query];
     }   

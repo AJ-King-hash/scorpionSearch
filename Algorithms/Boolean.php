@@ -5,7 +5,6 @@ use Algorithms\Interfaces\Chainer;
 use ReflectionClass;
 use Schemas\Phrases;
 use Wamania\Snowball\StemmerFactory;
-include(__DIR__ . "/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 
@@ -23,11 +22,11 @@ class Boolean extends StemmerFactory implements Algorithm, Chainer
     public array $final_results=[];
     public function testReflection()
     {
-        echo "reflection Running!";
+        // echo "reflection Running!";
     }
     public function __construct($name)
     {
-        echo "\n".$name."\n";
+        // echo "\n".$name."\n";
     }
     public function setNextChain(Chainer $next_chainer)
     {
@@ -48,23 +47,23 @@ class Boolean extends StemmerFactory implements Algorithm, Chainer
         }
         $this->boolean_query[]=$this->create("english")->stem($value_split);
         }
-        echo "You have ordered:" . PHP_EOL;
+        // echo "You have ordered:" . PHP_EOL;
         foreach ($this->boolean_query as $index) {
-            echo $index . PHP_EOL;
+            // echo $index . PHP_EOL;
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         foreach ($phrases_modifier->filteringRootWords as $key => $value) {
             if(in_array($key,$this->boolean_query)){
                 $this->matched_query_with_phrases[$key]=$value;
             } 
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         // print_r($this->matched_query_with_phrases);
         foreach ($this->matched_query_with_phrases as $k => $i) {
             $this->last_numbers[$k] = array_filter($i, function($i2) { return $i2 === 1; });
             $this->final_numbers[$k] = $phrases_modifier->arrayToInt(array_values($i));
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         // print_r($this->last_numbers);
         // print_r($this->final_numbers);
          $keyys = array_keys($this->matched_query_with_phrases);

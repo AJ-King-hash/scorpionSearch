@@ -20,7 +20,7 @@ class TreeBuilder
 
     }
     public function setSearchQuery(string $query){
-        $this->query=$query;
+        $this->query=isset(explode(" ",$query)[0])?$query:($query." "." ");
     }
     public function setPhrases(array $phrases){
         $this->phrases=$phrases;
@@ -29,11 +29,11 @@ class TreeBuilder
     {
         $basic_algorithm=$algorithm->value;
         if(in_array($basic_algorithm,AvailableAlgorithm::all())){
-            echo "\nAlgorithm {$basic_algorithm} Set Successfully! \n";
+            // echo "\nAlgorithm {$basic_algorithm} Set Successfully! \n";
             $this->basic_algorithm = $basic_algorithm;
         }
         else{
-            echo "Algorithm Not Available! \n";
+            // echo "Algorithm Not Available! \n";
         }
     }
 
@@ -49,10 +49,10 @@ class TreeBuilder
         // }
         foreach ($mixed_algorithms as $algorithm) {
             if (!in_array($algorithm, AvailableAlgorithm::all())) {
-                echo "Algorithm '{$algorithm}' Not Available! \n";
+                // echo "Algorithm '{$algorithm}' Not Available! \n";
                 return;
             }else {
-                echo "Algorithm '{$algorithm}' Set Successfully! \n";
+                // echo "Algorithm '{$algorithm}' Set Successfully! \n";
             }
         }
         $this->mixed_algorithm = $mixed_algorithms;

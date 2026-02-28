@@ -3,7 +3,6 @@ namespace Algorithms;
 
 use Algorithms\Interfaces\Chainer;
 use Schemas\Phrases;
-include(__DIR__ . "/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 
@@ -16,11 +15,11 @@ class EditDistance implements Algorithm, Chainer
     ];
     public function testReflection()
     {
-        echo "reflection Request Send!";
+        // echo "reflection Request Send!";
     }
     public function __construct($name)
     {
-        echo $name;
+        // echo $name;
     }
     public function setNextChain(Chainer $chainer)
     {
@@ -54,7 +53,7 @@ class EditDistance implements Algorithm, Chainer
                 }
             }
         }
-        echo "distance we need to change $s1 to $s2 is: " . $dp[$m][$n] . PHP_EOL;   
+        return "distance we need to change $s1 to $s2 is: " . $dp[$m][$n] . PHP_EOL;   
     }
 
 }

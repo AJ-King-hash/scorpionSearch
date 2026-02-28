@@ -3,7 +3,6 @@ namespace Algorithms;
 
 use Algorithms\Interfaces\Chainer;
 use Schemas\Phrases;
-include(__DIR__."/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 use ReflectionClass;
@@ -67,7 +66,7 @@ class AlgorithmsChainer
     }
     public function getOutput(string $query,array $phrases){
         
-        echo "\n";
+        // echo "\n";
         $phrases_modifier=(new Phrases($query,$phrases,$this->basic_algorithm))->modify();
         return $this->starting_algorithm->runAlgorithm($phrases_modifier,$this->mixed_algorithms);
         

@@ -10,7 +10,7 @@ class F1Measure extends StemmerFactory implements Algorithm, Chainer{
     public Chainer $nextChain;
     public function __construct($name)
     {
-        echo "\n".$name."\n";
+        // echo "\n".$name."\n";
     }    
     public function setNextChain(Chainer $chainer){
         $this->nextChain=$chainer;
@@ -33,8 +33,9 @@ class F1Measure extends StemmerFactory implements Algorithm, Chainer{
                 }
                 $Precision = $from_all / $all_count;
                 $Recall = $from_ret / $ret_count;
-                $F1_Measure = (2 * $Precision * $Recall) / ($Precision + $Recall);
-                echo "the F1-Measure is: " . ($F1_Measure * 100) . "%" . PHP_EOL;
+                $F1_Measure = (2 * $Precision * $Recall) / (($Precision + $Recall)==0?1:($Precision + $Recall));
+
+                // echo "the F1-Measure is: " . ($F1_Measure * 100) . "%" . PHP_EOL;
                 if(isset($this->nextChain)){
                     return $this->nextChain->runAlgorithm($phrases_modifier);
                 }

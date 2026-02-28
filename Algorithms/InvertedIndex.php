@@ -4,7 +4,6 @@ namespace Algorithms;
 use Algorithms\Interfaces\Chainer;
 use Schemas\Phrases;
 use Wamania\Snowball\StemmerFactory;
-include(__DIR__ . "/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 
@@ -21,11 +20,11 @@ class InvertedIndex extends StemmerFactory implements Algorithm, Chainer
     private Chainer $nextChain;
     public function testReflection()
     {
-        echo "reflection Request Send!";
+        // echo "reflection Request Send!";
     }
     public function __construct($name)
     {
-        echo $name;
+        // echo $name;
     }
     public function setNextChain(Chainer $chainer)
     {

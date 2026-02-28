@@ -4,7 +4,6 @@ namespace Algorithms;
 use Algorithms\Interfaces\Chainer;
 use Schemas\Phrases;
 use Wamania\Snowball\StemmerFactory;
-include(__DIR__."/../vendor/autoload.php");
 
 use Algorithms\Interfaces\Algorithm;
 
@@ -19,10 +18,10 @@ class PermutermIndex extends StemmerFactory implements Algorithm,Chainer{
     public array $final_results=[];
     private Chainer $nextChain;
     public function testReflection(){
-        echo "reflection Request Send!";
+        // echo "reflection Request Send!";
     }
     public function __construct($name){
-        echo $name;
+        // echo $name;
     }
     public function setNextChain(Chainer $chainer){
         $this->nextChain=$chainer;
@@ -49,23 +48,23 @@ class PermutermIndex extends StemmerFactory implements Algorithm,Chainer{
                     }
         }
 
-        echo "You have ordered:" . PHP_EOL;
+        // echo "You have ordered:" . PHP_EOL;
         foreach ($this->permuterm_query as $index) {
-            echo $index . PHP_EOL;
+            // echo $index . PHP_EOL;
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         foreach ($phrases_modifier->filteringRootWords as $key => $value) {
             if(in_array($key,$this->permuterm_query)){
                 $this->matched_query_with_phrases[$key]=$value;
             } 
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         // print_r($this->matched_query_with_phrases);
         foreach ($this->matched_query_with_phrases as $k => $i) {
             $this->last_numbers[$k] = array_filter($i, function($i2) { return $i2 === 1; });
             $this->final_numbers[$k] = $phrases_modifier->arrayToInt(array_values($i));
         }
-        echo "\n" . PHP_EOL;
+        // echo "\n" . PHP_EOL;
         // print_r($this->last_numbers);
         // print_r($this->final_numbers);
          $keyys = array_keys($this->matched_query_with_phrases);
@@ -74,9 +73,14 @@ class PermutermIndex extends StemmerFactory implements Algorithm,Chainer{
                 // permuterm condition here!!!
                  $result = array_map(function($x, $y) { return ($x || $y)!=1?0:1; }, $result, $this->matched_query_with_phrases[$keyys[$i]]);
             }
-            $final_result = array_filter($result, function($v) { return $v == 1; });
-            foreach (array_keys($final_result) as $k) {
-                $this->final_results[] = $phrases_modifier->phrasesWithUniqueNumber["d".$k];
+            if($result==null){
+
+            }else{
+
+                $final_result = array_filter($result, function($v) { return $v == 1; });
+                foreach (array_keys($final_result) as $k) {
+                    $this->final_results[] = $phrases_modifier->phrasesWithUniqueNumber["d".$k];
+                }
             }
         
         if(isset($this->nextChain)){
